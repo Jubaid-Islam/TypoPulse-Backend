@@ -23,6 +23,8 @@ services:
     environment:
       DATABASE_URL: "postgresql://postgres:postgrespassword@postgres:5432/typopulse?schema=public"
       PORT: 4000
+      BETTER_AUTH_SECRET: "k5qSIBaFrl11Ohy7cSW9UPsYZA7uoa7Y"
+      BETTER_AUTH_URL: "http://localhost:3000"
     depends_on:
       - postgres
 
