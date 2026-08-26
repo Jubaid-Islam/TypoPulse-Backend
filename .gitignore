@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build & Auto-generated Files
+dist/
+generated/
+
+# Environment Variables
+.env
+
+# AI & Editor Files
+.agents/
+.claude/
+.windsurf/
+
+# System Files
+.DS_Store
