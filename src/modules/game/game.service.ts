@@ -19,17 +19,25 @@ export class GameService {
 
   // leaderboard
   async getLeaderboard(limit: number) {
-    return prisma.$queryRaw`
-      SELECT 
-        u.name as "playerName",
-        MIN(g."totalTimeMs") as "bestTimeMs",
-        ROW_NUMBER() OVER (ORDER BY MIN(g."totalTimeMs") ASC) as rank
-      FROM "GameResult" g
-      JOIN "user" u ON g."userId" = u.id
-      GROUP BY u.id, u.name
-      ORDER BY "bestTimeMs" ASC
-      LIMIT ${limit}
-    `;
+    const rows = await prisma.$queryRaw<
+      { playerName: string; bestTimeMs: number; rank: number }[]
+    >`
+    SELECT 
+      u.name as "playerName",
+      MIN(g."totalTimeMs")::int as "bestTimeMs",
+      (ROW_NUMBER() OVER (ORDER BY MIN(g."totalTimeMs") ASC))::int as rank
+    FROM "GameResult" g
+    JOIN "user" u ON g."userId" = u.id
+    GROUP BY u.id, u.name
+    ORDER BY "bestTimeMs" ASC
+    LIMIT ${limit}
+  `;
+
+    return rows.map((row) => ({
+      playerName: row.playerName,
+      bestTimeMs: Number(row.bestTimeMs),
+      rank: Number(row.rank),
+    }));
   }
 
   // submit result

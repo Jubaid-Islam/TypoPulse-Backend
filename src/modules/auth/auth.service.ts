@@ -12,21 +12,25 @@ export class AuthService {
     return user;
   }
 
-  // // user registration
+  // user registration
   async register(name: string, email: string, password: string) {
     const response = await auth.api.signUpEmail({
       body: { name, email, password },
+      returnHeaders: true,
     });
 
-    if (!response || !response.user) {
+    const user = response?.response?.user 
+    if (!user) {
       throw new Error("REGISTRATION_FAILED");
     }
 
-    const user = response.user;
     return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      headers: response.headers,
     };
   }
 
@@ -54,8 +58,14 @@ export class AuthService {
 
   // user logout
   async logout(headers: any) {
-    await auth.api.signOut({ headers });
-    return true;
+    const response = await auth.api.signOut({
+      headers,
+      returnHeaders: true,
+    });
+    return {
+      success: true,
+      headers: response?.headers,
+    };
   }
 }
 

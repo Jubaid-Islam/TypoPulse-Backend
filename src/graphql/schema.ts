@@ -30,6 +30,9 @@ const resolvers = {
     ...authResolvers.Mutation,
     ...gameResolvers.Mutation,
   },
+  GameResult: {
+    ...gameResolvers.GameResult,
+  },
 };
 
 export const schema = createSchema({

@@ -7,6 +7,18 @@ import {
 } from "../../validation/schemas";
 import { APIError } from "better-auth";
 
+function setResponseCookies(res: any, headers?: Headers) {
+  if (!res || !headers) return;
+  const cookies =
+    typeof (headers as any).getSetCookie === "function"
+      ? (headers as any).getSetCookie()
+      : headers.get("set-cookie");
+
+  if (cookies) {
+    res.setHeader("Set-Cookie", cookies);
+  }
+}
+
 export const authResolvers = {
   Query: {
     // user
@@ -41,6 +53,7 @@ export const authResolvers = {
     register: async (
       _parent: any,
       { input }: { input: { name: string; email: string; password: string } },
+      context: any,
     ) => {
       // zod validation
       const validated = validateOrThrow(registerSchema, input);
@@ -48,7 +61,12 @@ export const authResolvers = {
 
       try {
         // call auth service
-        const user = await authService.register(name, email, password);
+        const { user, headers } = await authService.register(
+          name,
+          email,
+          password,
+        );
+        setResponseCookies(context.res, headers);
         return { user };
       } catch (error) {
         if (
@@ -79,17 +97,14 @@ export const authResolvers = {
 
       try {
         const { user, headers } = await authService.login(email, password);
-        const setCookie = headers?.get("set-cookie");
-        if (setCookie && context.res) {
-          context.res.setHeader("Set-Cookie", setCookie);
-        }
+        setResponseCookies(context.res, headers);
         return { user };
       } catch (error) {
-          if (
+        if (
           error instanceof APIError &&
           error.body?.code === "INVALID_EMAIL_OR_PASSWORD"
         ) {
-          throw new GraphQLError(" Invalid email or password", {
+          throw new GraphQLError("Invalid email or password", {
             extensions: { code: "BAD_USER_INPUT" },
           });
         }
@@ -110,7 +125,8 @@ export const authResolvers = {
       }
 
       try {
-        await authService.logout(context.headers);
+        const { headers } = await authService.logout(context.headers);
+        setResponseCookies(context.res, headers);
         return true;
       } catch (error) {
         if (error instanceof GraphQLError) {

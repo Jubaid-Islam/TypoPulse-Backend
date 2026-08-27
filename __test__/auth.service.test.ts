@@ -1,14 +1,13 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";;
+import { describe, it, expect, mock, beforeEach } from "bun:test";
 import { prismaMock, resetPrismaMock } from "../src/lib/__mocks__/prisma";
-
 
 mock.module("../src/lib/prisma", () => ({
   prisma: prismaMock,
 }));
 
-const mockSignUpEmail = mock();
-const mockSignInEmail = mock();
-const mockSignOut = mock();
+const mockSignUpEmail = mock<(...args: any[]) => Promise<any>>();
+const mockSignInEmail = mock<(...args: any[]) => Promise<any>>();
+const mockSignOut = mock<(...args: any[]) => Promise<any>>();
 
 mock.module("../src/lib/auth", () => ({
   auth: {
@@ -53,7 +52,7 @@ describe("AuthService", () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
       await expect(authService.getCurrentUser("missing-id")).rejects.toThrow(
-        "USER_NOT_FOUND"
+        "USER_NOT_FOUND",
       );
     });
   });
@@ -61,19 +60,24 @@ describe("AuthService", () => {
   describe("register", () => {
     it("returns user data on successful registration", async () => {
       mockSignUpEmail.mockResolvedValue({
-        user: { id: "user-1", name: "Test User", email: "test@mail.com" },
+        response: {
+          user: { id: "user-1", name: "Test User", email: "test@mail.com" },
+        },
       });
 
       const result = await authService.register(
         "Test User",
         "test@mail.com",
-        "password123"
+        "password123",
       );
 
       expect(result).toEqual({
-        id: "user-1",
-        name: "Test User",
-        email: "test@mail.com",
+        user: {
+          id: "user-1",
+          name: "Test User",
+          email: "test@mail.com",
+        },
+        headers: undefined!,
       });
     });
 
@@ -81,7 +85,7 @@ describe("AuthService", () => {
       mockSignUpEmail.mockResolvedValue({ user: null });
 
       await expect(
-        authService.register("Test User", "test@mail.com", "password123")
+        authService.register("Test User", "test@mail.com", "password123"),
       ).rejects.toThrow("REGISTRATION_FAILED");
     });
 
@@ -92,7 +96,7 @@ describe("AuthService", () => {
       mockSignUpEmail.mockImplementation(() => Promise.reject(apiError));
 
       await expect(
-        authService.register("Test User", "test@mail.com", "password123")
+        authService.register("Test User", "test@mail.com", "password123"),
       ).rejects.toEqual(apiError);
     });
   });
@@ -121,7 +125,7 @@ describe("AuthService", () => {
       mockSignInEmail.mockResolvedValue({ response: {} });
 
       await expect(
-        authService.login("test@mail.com", "wrong-password")
+        authService.login("test@mail.com", "wrong-password"),
       ).rejects.toThrow("INVALID_CREDENTIALS");
     });
   });
@@ -133,8 +137,14 @@ describe("AuthService", () => {
 
       const result = await authService.logout(mockHeaders);
 
-      expect(mockSignOut).toHaveBeenCalledWith({ headers: mockHeaders });
-      expect(result).toBe(true);
+      expect(mockSignOut).toHaveBeenCalledWith({
+        headers: mockHeaders,
+        returnHeaders: true,
+      });
+      expect(result).toEqual({
+        success: true,
+        headers: undefined!,
+      });
     });
   });
 });

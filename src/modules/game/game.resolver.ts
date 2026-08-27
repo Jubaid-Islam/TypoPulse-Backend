@@ -46,7 +46,7 @@ export const gameResolvers = {
       }
       // zod validation
       const validated = validateOrThrow(submitGameResultSchema, input);
-      
+
       try {
         const result = await gameService.submitResult(
           context.userId,
@@ -67,6 +67,16 @@ export const gameResolvers = {
           },
         );
       }
+    },
+  },
+
+  GameResult: {
+    createdAt: (parent: any) => {
+      if (!parent.createdAt) return new Date().toISOString();
+      if (parent.createdAt instanceof Date) {
+        return parent.createdAt.toISOString();
+      }
+      return new Date(parent.createdAt).toISOString();
     },
   },
 };
