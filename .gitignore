@@ -15,3 +15,5 @@ generated/
 
 # System Files
 .DS_Store
+.vercel
+.env*

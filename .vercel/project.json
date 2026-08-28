@@ -1,16 +1,1 @@
-{
-  "projectId": "prj_xS8qlVt8H2s2Ql3vWuAeos6H0pjJ",
-  "orgId": "team_dYNvei3Wn0IL6QKreq9T6kda",
-  "projectName": "typopulse-backend",
-  "settings": {
-    "createdAt": 1787848490888,
-    "framework": null,
-    "devCommand": null,
-    "installCommand": null,
-    "buildCommand": null,
-    "outputDirectory": null,
-    "rootDirectory": null,
-    "directoryListing": false,
-    "nodeVersion": "24.x"
-  }
-}
+{"projectId":"prj_xS8qlVt8H2s2Ql3vWuAeos6H0pjJ","orgId":"team_dYNvei3Wn0IL6QKreq9T6kda","projectName":"typopulse-backend"}
