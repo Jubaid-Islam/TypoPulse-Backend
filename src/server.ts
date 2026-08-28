@@ -1,5 +1,5 @@
-import app from "./app.js";
-import { prisma } from "./lib/prisma.js";
+import app from "./app";
+import { prisma } from "./lib/prisma";
 
 const PORT = process.env.PORT || 3000;
 
@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== "production") {
         console.log(`Server is running on ${PORT}`);
       });
     })
-    .catch(async (error) => {
+    .catch(async (error: unknown) => {
       console.error("An error occurred", error);
       await prisma.$disconnect();
       process.exit(1);

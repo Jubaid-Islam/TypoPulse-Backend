@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2023",
+    "outDir": "dist",
+    "rootDir": "src",
+    "noEmit": false,
+    "types": ["node"],
+    "allowImportingTsExtensions": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "src/lib/__mocks__"]
+}
