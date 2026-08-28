@@ -1,3 +1,7 @@
+### Fronetend Repository : https://github.com/Jubaid-Islam/TypoPulse-Frontend
+
+---
+
 # TypoPulse — Backend
 
 Backend for **TypoPulse**, a typing speed game. Handles authentication, game
