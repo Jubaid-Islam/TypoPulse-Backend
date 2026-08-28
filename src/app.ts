@@ -1,9 +1,9 @@
 import express, { Application } from "express";
 import cors from "cors";
 import { createYoga } from "graphql-yoga";
-import { createContext } from "./context";
-import { auth } from "./lib/auth";
-import { schema } from "./graphql/schema";
+import { createContext } from "./context.js";
+import { auth } from "./lib/auth.js";
+import { schema } from "./graphql/schema.js";
 const app: Application = express();
 
 app.use(
@@ -27,7 +27,7 @@ const yoga = createYoga({
 app.use(yoga.graphqlEndpoint, yoga);
 
 app.get("/", (req, res) => {
-  res.send("He");
+  res.send("Server is running smoothly!");
 });
 
 export default app;
