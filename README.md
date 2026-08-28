@@ -1,3 +1,7 @@
+### Backend Repository : https://github.com/Jubaid-Islam/TypoPulse-Frontend
+
+---
+
 # TypoPulse — Backend
 
 Backend for **TypoPulse**, a typing speed game. Handles authentication, game result submission/scoring, and a global leaderboard through a GraphQL API.
