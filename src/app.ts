@@ -7,21 +7,38 @@ import { schema } from "./graphql/schema";
 
 const app: Application = express();
 
+
+const allowedOrigins = [
+  process.env.APP_URL,
+  "http://localhost:3000",
+].filter(Boolean) as string[];
+
 app.use(
   cors({
-    origin: process.env.APP_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); 
+      }
+    },
     credentials: true,
-  }),
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie", "X-Requested-With"],
+  })
 );
 
-// Better-Auth handler 
-app.all("/api/auth/*splat", (req, res, next) => {
-  return auth.handler(req as unknown as Request);
-});
+
+app.options("*", cors());
 
 app.use(express.json());
 
-// GraphQL Yoga setup
+
+app.all("/api/auth/*splat", (req, res) => {
+  return auth.handler(req as unknown as Request);
+});
+
+// GraphQL Yoga Setup
 const yoga = createYoga({
   graphqlEndpoint: "/graphql",
   schema,
