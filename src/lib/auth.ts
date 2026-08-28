@@ -7,9 +7,10 @@ export const auth = betterAuth({
 
   trustedOrigins: ["https://typopulse-frontend.vercel.app", "http://localhost:3000"],
   advanced: {
-    defaultCookieAttributes: {
-      sameSite: "none",
+   defaultCookieAttributes: {
+      sameSite: "none", 
       secure: true,
+      partitioned: true,
     },
   },
 
